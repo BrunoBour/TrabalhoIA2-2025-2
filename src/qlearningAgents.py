@@ -43,6 +43,7 @@ class QLearningAgent(ReinforcementAgent):
         ReinforcementAgent.__init__(self, **args)
 
         "*** YOUR CODE HERE ***"
+        self.qvalues = util.Counter()
 
     def getQValue(self, state, action):
         """
@@ -51,7 +52,8 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        return self.qvalues[(state, action)]
 
 
     def computeValueFromQValues(self, state):
@@ -62,7 +64,13 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        possible_actions = self.getLegalActions(state)
+        
+        if not possible_actions:
+            return 0.0
+
+        return max(self.getQValue(state, a) for a in possible_actions)
 
     def computeActionFromQValues(self, state):
         """
@@ -71,7 +79,14 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        possible_actions = self.getLegalActions(state)
+        
+        if not possible_actions:
+            return None
+          
+        max_value = self.computeValueFromQValues(state)
+        bests_action = [a for a in possible_actions if self.getQValue(state, a) == max_value]
+        return random.choice(bests_action)
 
     def getAction(self, state):
         """
@@ -102,7 +117,19 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        # Valor-Q atual
+        valor_antigo = self.getQValue(state, action)
+
+        # Melhor valor futuro (do proximo estado)
+        proximo_valor = self.computeValueFromQValues(nextState)
+
+        # Atualizacao de Q-learning
+        novo_valor = (1 - self.alpha) * valor_antigo + self.alpha * (reward + self.discount * proximo_valor)
+
+        # Salva o novo valor no dicionario de Q-values
+        self.qvalues[(state, action)] = novo_valor
+        
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)

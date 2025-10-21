@@ -67,7 +67,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
         return self.values[state]
 
-    def computeQValueFromValues(self, state, action): # retorna o valor-Q do par (estado,ação) dado pela função de valor em self.values.
+    def computeQValueFromValues(self, state, action):
         """
           Compute the Q-value of action in state from the
           value function stored in self.values.
@@ -81,7 +81,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         return q_value
     
     
-    def computeActionFromValues(self, state): # calcula a melhor acao de acordo com a funcao de valor fornecida por self.values
+    def computeActionFromValues(self, state):
         """
           The policy is the best action in the given state
           according to the values currently stored in self.values.
