@@ -11,7 +11,6 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
-
 import mdp, util
 from learningAgents import ValueEstimationAgent
 
@@ -45,6 +44,22 @@ class ValueIterationAgent(ValueEstimationAgent):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
 
+        for i in range(self.iterations):
+            
+            new_values = util.Counter()  # novo dicionario vazio
+
+            for state in self.mdp.getStates():
+                if self.mdp.isTerminal(state):
+                    new_values[state] = 0
+                    continue
+
+                possible_actions = self.mdp.getPossibleActions(state)
+                if possible_actions:
+                    max_q_value = max([self.computeQValueFromValues(state, action)
+                                    for action in possible_actions])
+                    new_values[state] = max_q_value
+
+            self.values = new_values
 
     def getValue(self, state):
         """
@@ -57,9 +72,15 @@ class ValueIterationAgent(ValueEstimationAgent):
           Compute the Q-value of action in state from the
           value function stored in self.values.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
+        q_value = 0
+        transitions = self.mdp.getTransitionStatesAndProbs(state, action)
+        for next_state, prob in transitions:
+            reward = self.mdp.getReward(state, action, next_state)
+            next_state_value = self.getValue(next_state)
+            q_value += prob * (reward + self.discount * next_state_value)
+        return q_value
+    
+    
     def computeActionFromValues(self, state):
         """
           The policy is the best action in the given state
@@ -69,8 +90,18 @@ class ValueIterationAgent(ValueEstimationAgent):
           there are no legal actions, which is the case at the
           terminal state, you should return None.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if self.mdp.isTerminal(state):
+            return None
+
+        possible_actions = self.mdp.getPossibleActions(state)
+        if not possible_actions:
+            return None
+
+        action_q_values = util.Counter()
+        for action in possible_actions:
+            action_q_values[action] = self.computeQValueFromValues(state, action)
+
+        return action_q_values.argMax()
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
