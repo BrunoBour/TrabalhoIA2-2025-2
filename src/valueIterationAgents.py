@@ -39,14 +39,13 @@ class ValueIterationAgent(ValueEstimationAgent):
         self.mdp = mdp
         self.discount = discount
         self.iterations = iterations
-        self.values = util.Counter()  # A Counter is a dict with default 0
+        self.values = util.Counter()  
 
-        # Write value iteration code here
         "*** YOUR CODE HERE ***"
 
         for i in range(self.iterations):
             
-            new_values = util.Counter()  # novo dicionario vazio
+            new_values = util.Counter()
 
             for state in self.mdp.getStates():
                 if self.mdp.isTerminal(state):

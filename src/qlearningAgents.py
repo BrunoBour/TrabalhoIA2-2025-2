@@ -99,7 +99,6 @@ class QLearningAgent(ReinforcementAgent):
           HINT: You might want to use util.flipCoin(prob)
           HINT: To pick randomly from a list, use random.choice(list)
         """
-        # Pick Action
         legalActions = self.getLegalActions(state)
         action = None
         
@@ -107,11 +106,8 @@ class QLearningAgent(ReinforcementAgent):
         if not legalActions:
             return action
           
-        # Estratégia Epsilon-Greedy
-        # Com probabilidade epsilon, explora (ação aleatória)
         if util.flipCoin(self.epsilon):
             action = random.choice(legalActions)
-        # Com probabilidade 1-epsilon, explora (melhor ação)
         else:
             action = self.computeActionFromQValues(state)
 
@@ -128,16 +124,12 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         
-        # Valor-Q atual
         valor_antigo = self.getQValue(state, action)
 
-        # Melhor valor futuro (do proximo estado)
         proximo_valor = self.computeValueFromQValues(nextState)
 
-        # Atualizacao de Q-learning
         novo_valor = (1 - self.alpha) * valor_antigo + self.alpha * (reward + self.discount * proximo_valor)
 
-        # Salva o novo valor no dicionario de Q-values
         self.qvalues[(state, action)] = novo_valor
         
 
